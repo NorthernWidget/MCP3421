@@ -27,11 +27,13 @@ class MCP3421
     MCP3421(int _ADR);
     MCP3421(void);
 
+    int Begin(int _ADR);
+    
     int Begin(void);
 
-    long GetVoltageRaw();
+    long GetVoltageRaw(bool WaitForVal = true); //Force new values by default  
 
-    float GetVoltage();
+    float GetVoltage(bool WaitForVal = false); //Force new values by default
 
     int SetGain(int DesiredGain);
 

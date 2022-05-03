@@ -20,25 +20,40 @@ Distributed as-is; no warranty is given.
 MCP3421::MCP3421(int _ADR)
 {
   ADR = _ADR; 
-  Wire.begin();  
+  #if defined(ARDUINO) && ARDUINO >= 100 
+    Wire.begin();
+  #elif defined(PARTICLE)
+    if(!Wire.isEnabled()) Wire.begin(); //Only initialize I2C if not done already //INCLUDE FOR USE WITH PARTICLE 
+  #endif
 }
 
 MCP3421::MCP3421(void)  
 {
   ADR = 0x6A; //Use 0x6A as Address by default  
-  Wire.begin();  
+  #if defined(ARDUINO) && ARDUINO >= 100 
+    Wire.begin();
+  #elif defined(PARTICLE)
+    if(!Wire.isEnabled()) Wire.begin(); //Only initialize I2C if not done already //INCLUDE FOR USE WITH PARTICLE 
+  #endif
 }
 
+int MCP3421::Begin(int _ADR) //Initialize the system in 1x gain, with 12 bit resolution, continuious conversions
+{
+  ADR = _ADR; //Allow for ADR to be set in begin statment as well
+  return Begin();
+}
 
 int MCP3421::Begin(void) //Initialize the system in 1x gain, with 12 bit resolution, continuious conversions
 {
   SetGain(1);
   SetResolution(12);
   SetMode(CONTINUIOUS);
+  Wire.beginTransmission(ADR);
+  return Wire.endTransmission(); //Return I2C status 
 }
 
 //Returns the bit value from the conversion, from 0 to 2^n
-long MCP3421::GetVoltageRaw() {
+long MCP3421::GetVoltageRaw(bool WaitForVal) {
   int Data[4];
   
   int Config = GetConfig(); //Get config register to test if single shot or continuios operation is being used
@@ -51,7 +66,7 @@ long MCP3421::GetVoltageRaw() {
 
   }
 
-    while((Config & 0x80) != 0) { //Wait for next conversion (for both single shot or continuious)
+    while((Config & 0x80) != 0 && WaitForVal == true) { //Wait for next conversion (for both single shot or continuious), only if told to wait for new value
       Config = GetConfig(); //Test register for new value to be read 
     }
 
@@ -87,8 +102,8 @@ long MCP3421::GetVoltageRaw() {
 }
 
 //Returns float voltage value in volts
-float MCP3421::GetVoltage() {
-  long Raw = GetVoltageRaw(); //Get the raw bits
+float MCP3421::GetVoltage(bool WaitForVal) {
+  long Raw = GetVoltageRaw(WaitForVal); //Get the raw bits, pass on stale value flag
   int Config = GetConfig(); //Get configuration register 
 
   int Gain = round(pow(2, (Config & 0x03))); //Calc gain from config register 

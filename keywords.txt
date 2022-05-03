@@ -6,7 +6,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-MCP3425	KEYWORD1	MCP3425
+MCP3421	KEYWORD1	MCP3421
 
 #######################################
 # Methods and Functions (KEYWORD2)
