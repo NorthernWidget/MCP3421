@@ -70,7 +70,7 @@ long MCP3421::GetVoltageRaw(bool WaitForVal) {
       Config = GetConfig(); //Test register for new value to be read 
     }
 
-  delay(measurement_duration_ms); // Wait the requisite amount of time to take a measurement
+  // delay(measurement_duration_ms); // Wait the requisite amount of time to take a measurement
 
   Wire.requestFrom(ADR, 4);
   
@@ -89,8 +89,12 @@ long MCP3421::GetVoltageRaw(bool WaitForVal) {
   if(NumBits == 14) RawADC = ((Data[0] & 0x3F) << 8) + Data[1];
   if(NumBits == 16) RawADC = ((Data[0] & 0xFF) << 8) + Data[1];
   if(NumBits == 18) RawADC = ((long(Data[0]) & 0x03) << 16) + (long(Data[1]) << 8) + Data[2];
-    
-  if(RawADC > pow(2, NumBits)/2 - 1) //REMOVE??
+  // if(NumBits == 12) RawADC = ((Data[0]) << 8) + Data[1];
+  // if(NumBits == 14) RawADC = ((Data[0]) << 8) + Data[1];
+  // if(NumBits == 16) RawADC = ((Data[0]) << 8) + Data[1];
+  // if(NumBits == 18) RawADC = ((long(Data[0])) << 16) + (long(Data[1]) << 8) + Data[2];
+  
+  if(RawADC > pow(2, NumBits)/2 - 1) //REMOVE?? //Convert negative values to positive in order to measure abs differential only
   {
     RawADC -= pow(2, NumBits) - 1;
   }
