@@ -65,8 +65,8 @@ long MCP3421::GetVoltageRaw(bool WaitForVal) {
     delay(1);
 
   }
-
-    while((Config & 0x80) != 0 && WaitForVal == true) { //Wait for next conversion (for both single shot or continuious), only if told to wait for new value
+    unsigned long localTime = millis(); 
+    while((Config & 0x80) != 0 && WaitForVal == true && (millis() - localTime) < 275) { //Wait for next conversion (for both single shot or continuious), only if told to wait for new value, or 275ms 
       Config = GetConfig(); //Test register for new value to be read 
     }
 
