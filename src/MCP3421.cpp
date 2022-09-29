@@ -52,7 +52,7 @@ int MCP3421::Begin(void) //Initialize the system in 1x gain, with 12 bit resolut
   return Wire.endTransmission(); //Return I2C status 
 }
 
-//Returns the bit value from the conversion, from 0 to 2^n
+//Returns the bit value from the conversion, from 0 to 2^n - Defaults to waiting for updated value
 long MCP3421::GetVoltageRaw(bool WaitForVal) {
   int Data[4];
   
@@ -69,8 +69,6 @@ long MCP3421::GetVoltageRaw(bool WaitForVal) {
     while((Config & 0x80) != 0 && WaitForVal == true) { //Wait for next conversion (for both single shot or continuious), only if told to wait for new value
       Config = GetConfig(); //Test register for new value to be read 
     }
-
-  // delay(measurement_duration_ms); // Wait the requisite amount of time to take a measurement
 
   Wire.requestFrom(ADR, 4);
   
@@ -107,7 +105,7 @@ long MCP3421::GetVoltageRaw(bool WaitForVal) {
   return RawADC;  //return raw result
 }
 
-//Returns float voltage value in volts
+//Returns float voltage value in volts - Defaults to waiting for updated value
 float MCP3421::GetVoltage(bool WaitForVal) {
   long Raw = GetVoltageRaw(WaitForVal); //Get the raw bits, pass on stale value flag
   int Config = GetConfig(); //Get configuration register 
@@ -145,20 +143,6 @@ int MCP3421::SetResolution(int DesiredResolution) {
   boolean ValidResolution = false;
   for(int i = 0; i < 4; i++){ //Test if resolution value is valid
     if(12 + 2*i == DesiredResolution) ValidResolution = true;
-  }
-
-  // Set measurement duration based on resolution  
-  if(DesiredResolution == 12){
-    measurement_duration_ms = 5;
-  }
-  else if(DesiredResolution == 14){
-    measurement_duration_ms = 17;
-  }
-  else if(DesiredResolution == 16){
-    measurement_duration_ms = 67;
-  }
-  else if(DesiredResolution == 18){
-    measurement_duration_ms = 267;
   }
 
   if(ValidResolution){ //If resolution value is valid, attempt to set new resolution
