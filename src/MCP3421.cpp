@@ -37,13 +37,13 @@ MCP3421::MCP3421(void)
   #endif
 }
 
-int MCP3421::Begin(int _ADR) //Initialize the system in 1x gain, with 12 bit resolution, continuious conversions
+int MCP3421::Begin(int _ADR) //Initialize the system in 1x gain, with 12 bit resolution, continuous conversions
 {
   ADR = _ADR; //Allow for ADR to be set in begin statment as well
   return Begin();
 }
 
-int MCP3421::Begin(void) //Initialize the system in 1x gain, with 12 bit resolution, continuious conversions
+int MCP3421::Begin(void) //Initialize the system in 1x gain, with 12 bit resolution, continuous conversions
 {
   SetGain(1);
   SetResolution(12); // measurement duration defaults to that required for 12 bit
@@ -56,7 +56,7 @@ int MCP3421::Begin(void) //Initialize the system in 1x gain, with 12 bit resolut
 long MCP3421::GetVoltageRaw(bool WaitForVal) {
   int Data[4];
   
-  int Config = GetConfig(); //Get config register to test if single shot or continuios operation is being used
+  int Config = GetConfig(); //Get config register to test if single shot or continuous operation is being used
   if((Config & 0x10) == SINGLE_SHOT) { //If single shot is being used, intiate a new conversion
     Config = Config | 0x80;
     Wire.beginTransmission(ADR);
@@ -66,7 +66,7 @@ long MCP3421::GetVoltageRaw(bool WaitForVal) {
 
   }
     unsigned long localTime = millis(); 
-    while((Config & 0x80) != 0 && WaitForVal == true && (millis() - localTime) < 275) { //Wait for next conversion (for both single shot or continuious), only if told to wait for new value, or 275ms 
+    while((Config & 0x80) != 0 && WaitForVal == true && (millis() - localTime) < 275) { //Wait for next conversion (for both single shot or continuous), only if told to wait for new value, or 275ms
       Config = GetConfig(); //Test register for new value to be read 
     }
 
@@ -87,17 +87,13 @@ long MCP3421::GetVoltageRaw(bool WaitForVal) {
   if(NumBits == 14) RawADC = ((Data[0] & 0x3F) << 8) + Data[1];
   if(NumBits == 16) RawADC = ((Data[0] & 0xFF) << 8) + Data[1];
   if(NumBits == 18) RawADC = ((long(Data[0]) & 0x03) << 16) + (long(Data[1]) << 8) + Data[2];
-  // if(NumBits == 12) RawADC = ((Data[0]) << 8) + Data[1];
-  // if(NumBits == 14) RawADC = ((Data[0]) << 8) + Data[1];
-  // if(NumBits == 16) RawADC = ((Data[0]) << 8) + Data[1];
-  // if(NumBits == 18) RawADC = ((long(Data[0])) << 16) + (long(Data[1]) << 8) + Data[2];
   
   if(RawADC > pow(2, NumBits)/2 - 1) //REMOVE?? //Convert negative values to positive in order to measure abs differential only
   {
     RawADC -= pow(2, NumBits) - 1;
   }
   
-  Config = GetConfig();  //Get congiuration register to do bit masking with
+  Config = GetConfig();  //Get configuration register to do bit masking with
   Wire.beginTransmission(ADR);
   Wire.write(Config & 0xEF); //Clear conversion bit to ensure result is not reread 
   Wire.endTransmission();
@@ -173,7 +169,7 @@ int MCP3421::GetConfig() {
 }
 
 
-//Sets the mode of operation, either continuious or single shot operation
+//Sets the mode of operation, either continuous or single shot operation
 //Takes as input the desired mode, either CONTINUOUS or SINGLE_SHOT
 //Returns either the result of the attempt if input is valid, or -1 if input is not valid (neither CONTINUOUS or SINGLE_SHOT)
 int MCP3421::SetMode(int Mode) {

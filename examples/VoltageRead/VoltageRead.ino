@@ -3,9 +3,9 @@
 MCP3421 adc; //Initialize MCP3421 with default address, 0x6A
 
 void setup() {
-  Serial.begin(9600); //Begin serial comunication
+  Serial.begin(9600); //Begin serial communication
   adc.Begin(); //Initialize ADC
-  Serial.print("Welcome to the Machine...\nBegin MCP3421 Demonstration\n\n"); //Token greating to verify Serial
+  Serial.print("Welcome to the Machine...\nBegin MCP3421 Demonstration\n\n"); //Token greeting to verify Serial
 }
 
 void loop() {
