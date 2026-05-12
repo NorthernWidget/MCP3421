@@ -17,7 +17,7 @@ Distributed as-is; no warranty is given.
 
 #include "Arduino.h"
 
-#define CONTINUIOUS 1
+#define CONTINUOUS 1
 #define SINGLE_SHOT 0
 
 class MCP3421

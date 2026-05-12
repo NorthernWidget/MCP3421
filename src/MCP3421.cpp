@@ -47,7 +47,7 @@ int MCP3421::Begin(void) //Initialize the system in 1x gain, with 12 bit resolut
 {
   SetGain(1);
   SetResolution(12); // measurement duration defaults to that required for 12 bit
-  SetMode(CONTINUIOUS);
+  SetMode(CONTINUOUS);
   Wire.beginTransmission(ADR);
   return Wire.endTransmission(); //Return I2C status 
 }
@@ -174,8 +174,8 @@ int MCP3421::GetConfig() {
 
 
 //Sets the mode of operation, either continuious or single shot operation
-//Takes as input the desired mode, either CONTINUIOUS or SINGLE_SHOT
-//Returns either the result of the attempt if input is valid, or -1 if input is not valid (neither CONTINUIOUS or SINGLE_SHOT)
+//Takes as input the desired mode, either CONTINUOUS or SINGLE_SHOT
+//Returns either the result of the attempt if input is valid, or -1 if input is not valid (neither CONTINUOUS or SINGLE_SHOT)
 int MCP3421::SetMode(int Mode) {
   int Config  = GetConfig();  //Get current configuration register 
   if(Mode % 2 == 0) { //Value is either 0 or 1 and therefore valid, proceed 

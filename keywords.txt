@@ -25,4 +25,4 @@ Begin			KEYWORD2
 #######################################
 
 SINGLE_SHOT	LITERAL1
-CONTINUIOUS	LITSRAL1
+CONTINUOUS	LITERAL1
