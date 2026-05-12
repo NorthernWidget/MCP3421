@@ -82,16 +82,14 @@ long MCP3421::GetVoltageRaw(bool WaitForVal) {
 
   int NumBits = 12 + ((Data[3] & 0x0C) >> 2)*2; //Calulate the number of bits used for conversion from config register
 
-  unsigned long RawADC = 0; //Use appropriate conversion math based on the number of bits used in the conversion
+  long RawADC = 0; //Use appropriate conversion math based on the number of bits used in the conversion
   if(NumBits == 12) RawADC = ((Data[0] & 0x0F) << 8) + Data[1];
   if(NumBits == 14) RawADC = ((Data[0] & 0x3F) << 8) + Data[1];
   if(NumBits == 16) RawADC = ((Data[0] & 0xFF) << 8) + Data[1];
   if(NumBits == 18) RawADC = ((long(Data[0]) & 0x03) << 16) + (long(Data[1]) << 8) + Data[2];
-  
-  if(RawADC > pow(2, NumBits)/2 - 1) //REMOVE?? //Convert negative values to positive in order to measure abs differential only
-  {
-    RawADC -= pow(2, NumBits) - 1;
-  }
+
+  if(RawADC > pow(2, NumBits)/2 - 1) // MSB set: negative in two's complement
+    RawADC -= (long)pow(2, NumBits);  // sign-extend to signed long
   
   Config = GetConfig();  //Get configuration register to do bit masking with
   Wire.beginTransmission(ADR);
