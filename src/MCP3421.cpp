@@ -104,10 +104,9 @@ float MCP3421::GetVoltage(bool WaitForVal) {
   long Raw = GetVoltageRaw(WaitForVal); //Get the raw bits, pass on stale value flag
   int Config = GetConfig(); //Get configuration register 
 
-  int Gain = round(pow(2, (Config & 0x03))); //Calc gain from config register 
-  int NumBits = 12 + ((Config & 0x0C) >> 2)*2; //Calc number of bits from config register 
-  return (float(Raw)*4.096)/float(round(pow(2, NumBits)));  //Return converted value 
-//  return (float(Raw)*(4.096/pow(2, NumBits)))/(float(Gain));
+  int Gain = round(pow(2, (Config & 0x03))); //Calc gain from config register
+  int NumBits = 12 + ((Config & 0x0C) >> 2)*2; //Calc number of bits from config register
+  return (float(Raw)*(4.096/pow(2, NumBits)))/(float(Gain));
 }
 
 //Sets the gain of the internal PGA, with either 1x, 2x, 4x, or 8x
