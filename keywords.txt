@@ -13,7 +13,9 @@ MCP3421	KEYWORD1	MCP3421
 #######################################
 
 SetResolution	KEYWORD2
+getResolution	KEYWORD2
 SetGain			KEYWORD2
+getGain			KEYWORD2
 GetVoltage 		KEYWORD2
 GetVoltageRaw	KEYWORD2
 SetMode			KEYWORD2

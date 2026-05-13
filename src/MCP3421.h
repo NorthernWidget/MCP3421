@@ -37,7 +37,11 @@ class MCP3421
 
     int SetGain(int DesiredGain);
 
+    int getGain();
+
     int SetResolution(int DesiredResolution);
+
+    int getResolution();
 
     int SetMode(int Mode);
 

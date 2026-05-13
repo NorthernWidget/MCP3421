@@ -109,6 +109,16 @@ float MCP3421::GetVoltage(bool WaitForVal) {
   return (float(Raw)*(4.096/pow(2, NumBits)))/(float(Gain));
 }
 
+//Returns the current gain setting read from the hardware config register (1, 2, 4, or 8)
+int MCP3421::getGain() {
+  return round(pow(2, (GetConfig() & 0x03)));
+}
+
+//Returns the current resolution setting read from the hardware config register (12, 14, 16, or 18)
+int MCP3421::getResolution() {
+  return 12 + ((GetConfig() & 0x0C) >> 2)*2;
+}
+
 //Sets the gain of the internal PGA, with either 1x, 2x, 4x, or 8x
 //Takes as input the desired gain factor 
 //Returns result of I2C comunication if gain value is valid, or returns -1 if gain value is not valid
