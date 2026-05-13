@@ -12,14 +12,14 @@ MCP3421	KEYWORD1	MCP3421
 # Methods and Functions (KEYWORD2)
 #######################################
 
-SetResolution	KEYWORD2
+setResolution	KEYWORD2
 getResolution	KEYWORD2
-SetGain			KEYWORD2
+setGain			KEYWORD2
 getGain			KEYWORD2
-GetVoltage 		KEYWORD2
-GetVoltageRaw	KEYWORD2
-SetMode			KEYWORD2
-Begin			KEYWORD2
+getVoltage		KEYWORD2
+getVoltageRaw	KEYWORD2
+setMode			KEYWORD2
+begin			KEYWORD2
 
 
 #######################################

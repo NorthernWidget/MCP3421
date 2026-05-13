@@ -24,32 +24,31 @@ class MCP3421
 {
   public:
 
-    MCP3421(int _ADR);
+    MCP3421(int _addr);
     MCP3421(void);
 
-    int Begin(int _ADR);
-    
-    int Begin(void);
+    int begin(int _addr);
 
-    long GetVoltageRaw(bool WaitForVal = true); //Force new values by default  
+    int begin(void);
 
-    float GetVoltage(bool WaitForVal = true); //Force new values by default
+    long getVoltageRaw(bool waitForVal = true);
 
-    int SetGain(int DesiredGain);
+    float getVoltage(bool waitForVal = true);
+
+    int setGain(int gain);
 
     int getGain();
 
-    int SetResolution(int DesiredResolution);
+    int setResolution(int resolution);
 
     int getResolution();
 
-    int SetMode(int Mode);
+    int setMode(int mode);
 
   private:
-    int ADR;
-    int GetConfig();
+    int addr;
+    int getConfig();
 
 };
 
 #endif
-
