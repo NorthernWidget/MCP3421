@@ -45,8 +45,11 @@ class MCP3421
 
     int setMode(int mode);
 
+    bool isConnected();
+
   private:
     int addr;
+    bool _initOK = false;
     int getConfig();
 
 };

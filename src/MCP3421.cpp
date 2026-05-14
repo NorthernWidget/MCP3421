@@ -45,11 +45,19 @@ int MCP3421::begin(int _addr) //Initialize the system in 1x gain, with 12 bit re
 
 int MCP3421::begin(void) //Initialize the system in 1x gain, with 12 bit resolution, continuous conversions
 {
-  setGain(1);
-  setResolution(12); // measurement duration defaults to that required for 12 bit
-  setMode(CONTINUOUS);
+  int result = 0;
+  result |= setGain(1);
+  result |= setResolution(12); // measurement duration defaults to that required for 12 bit
+  result |= setMode(CONTINUOUS);
   Wire.beginTransmission(addr);
-  return Wire.endTransmission(); //Return I2C status
+  result |= Wire.endTransmission(); //Return I2C status
+  _initOK = (result == 0);
+  return result;
+}
+
+//Returns true if begin() completed without I2C errors
+bool MCP3421::isConnected() {
+  return _initOK;
 }
 
 //Returns the bit value from the conversion - defaults to waiting for updated value

@@ -20,6 +20,7 @@ getVoltage		KEYWORD2
 getVoltageRaw	KEYWORD2
 setMode			KEYWORD2
 begin			KEYWORD2
+isConnected		KEYWORD2
 
 
 #######################################
