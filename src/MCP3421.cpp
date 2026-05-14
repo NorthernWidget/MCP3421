@@ -52,6 +52,7 @@ int MCP3421::begin(void) //Initialize the system in 1x gain, with 12 bit resolut
   Wire.beginTransmission(addr);
   result |= Wire.endTransmission(); //Return I2C status
   _initOK = (result == 0);
+  if(_initOK) _gain = 1;
   return result;
 }
 
@@ -117,8 +118,10 @@ float MCP3421::getVoltage(bool waitForVal) {
   return (float(raw)*(4.096/pow(2, numBits)))/(float(gain));
 }
 
-//Returns the current gain setting read from the hardware config register (1, 2, 4, or 8)
+//Returns the known gain if set by this library instance; otherwise reads from hardware.
+//Returns 0 if gain is unknown and hardware cannot be reached.
 int MCP3421::getGain() {
+  if(_gain != 0) return _gain;
   return round(pow(2, (getConfig() & 0x03)));
 }
 
@@ -141,7 +144,10 @@ int MCP3421::setGain(int gain) {
     config = (config & 0xFC) | int(log(gain)/log(2));
     Wire.beginTransmission(addr);
     Wire.write(config);
-    return Wire.endTransmission(); //Return results of attempt
+    int result = Wire.endTransmission();
+    if(result == 0) _gain = (uint8_t)gain;
+    else _gain = 0; // I2C failure: gain state now unknown
+    return result;
   }
 
   else return -1; //If gain value is not valid, return -1

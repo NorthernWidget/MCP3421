@@ -50,6 +50,7 @@ class MCP3421
   private:
     int addr;
     bool _initOK = false;
+    uint8_t _gain = 0; // 0 = undefined; valid values are 1, 2, 4, 8
     int getConfig();
 
 };
