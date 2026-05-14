@@ -63,7 +63,7 @@ bool MCP3421::isConnected() {
 
 //Returns the bit value from the conversion - defaults to waiting for updated value
 long MCP3421::getVoltageRaw(bool waitForVal) {
-  int data[4];
+  int data[4] = {0};
 
   int config = getConfig(); //Get config register to test if single shot or continuous operation is being used
   if((config & 0x10) == SINGLE_SHOT) { //If single shot is being used, initiate a new conversion
@@ -97,8 +97,8 @@ long MCP3421::getVoltageRaw(bool waitForVal) {
   if(numBits == 16) rawADC = ((data[0] & 0xFF) << 8) + data[1];
   if(numBits == 18) rawADC = ((long(data[0]) & 0x03) << 16) + (long(data[1]) << 8) + data[2];
 
-  if(rawADC > pow(2, numBits)/2 - 1) // MSB set: negative in two's complement
-    rawADC -= (long)pow(2, numBits);  // sign-extend to signed long
+  if(rawADC > (1L << (numBits - 1)) - 1) // MSB set: negative in two's complement
+    rawADC -= (1L << numBits);           // sign-extend to signed long
 
   config = getConfig();  //Get configuration register to do bit masking with
   Wire.beginTransmission(addr);
@@ -113,16 +113,16 @@ float MCP3421::getVoltage(bool waitForVal) {
   long raw = getVoltageRaw(waitForVal); //Get the raw bits, pass on stale value flag
   int config = getConfig(); //Get configuration register
 
-  int gain = round(pow(2, (config & 0x03))); //Calc gain from config register
+  int gain = 1 << (config & 0x03); //Calc gain from config register
   int numBits = 12 + ((config & 0x0C) >> 2)*2; //Calc number of bits from config register
-  return (float(raw)*(4.096/pow(2, numBits)))/(float(gain));
+  return (float(raw) * (4.096 / (float)(1L << numBits))) / (float)gain;
 }
 
 //Returns the known gain if set by this library instance; otherwise reads from hardware.
 //Returns 0 if gain is unknown and hardware cannot be reached.
 int MCP3421::getGain() {
   if(_gain != 0) return _gain;
-  return round(pow(2, (getConfig() & 0x03)));
+  return 1 << (getConfig() & 0x03);
 }
 
 //Returns the current resolution setting read from the hardware config register (12, 14, 16, or 18)
@@ -136,12 +136,12 @@ int MCP3421::getResolution() {
 int MCP3421::setGain(int gain) {
   boolean validGain = false;
   for(int i = 0; i < 4; i++){ //Test if gain value is valid
-    if(round(pow(2, i)) == gain) validGain = true;
+    if((1 << i) == gain) validGain = true;
   }
 
   if(validGain){ //If gain value is valid, attempt to set new gain value
     int config = getConfig();
-    config = (config & 0xFC) | int(log(gain)/log(2));
+    config = (config & 0xFC) | __builtin_ctz(gain); // ctz(1)=0, ctz(2)=1, ctz(4)=2, ctz(8)=3
     Wire.beginTransmission(addr);
     Wire.write(config);
     int result = Wire.endTransmission();
@@ -175,7 +175,7 @@ int MCP3421::setResolution(int resolution) {
 
 //Returns the configuration register of the device, used for testing status of conversion, mode of operation, gain and resolution settings
 int MCP3421::getConfig() {
-  int data[4];
+  int data[4] = {0};
 
   Wire.requestFrom(addr, 4);
   if(Wire.available() == 4)  //Get 4 bytes from device
