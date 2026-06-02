@@ -1,0 +1,28 @@
+{
+  "title": "NW_MCP3421",
+  "description": "Arduino library for the MCP3421 18-bit ADC, communicating via I2C.",
+  "upload_type": "software",
+  "license": {"id": "GPL-3.0-only"},
+  "creators": [
+    {
+      "name": "Schulz, Bobby",
+      "orcid": "0000-0002-9272-4756",
+      "affiliation": "Northern Widget LLC"
+    },
+    {
+      "name": "Wickert, Andrew D.",
+      "orcid": "0000-0002-9545-3365",
+      "affiliation": "University of Minnesota, Department of Earth & Environmental Sciences"
+    },
+    {
+      "name": "Barefoot, Eric"
+    }
+  ],
+  "keywords": [
+    "Arduino",
+    "ADC",
+    "analog-to-digital converter",
+    "I2C",
+    "Northern Widget"
+  ]
+}
